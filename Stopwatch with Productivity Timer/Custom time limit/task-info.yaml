@@ -1193,6 +1193,12 @@ files:
         }
     }
   learner_created: false
+- name: src/main/res/values/ids.xml
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/9289#comment
-status: Unchecked
-record: -1
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Mon, 03 Oct 2022 11:13:00 UTC
+record: 4

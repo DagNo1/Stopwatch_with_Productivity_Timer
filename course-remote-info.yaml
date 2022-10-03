@@ -4,7 +4,7 @@ hyperskill_project:
   is_template_based: false
   use_ide: true
   environment: android
-update_date: Sun, 02 Oct 2022 14:47:01 UTC
+update_date: Mon, 03 Oct 2022 09:16:40 UTC
 stages:
 - id: 394
   step: 9286
@@ -14,10 +14,10 @@ stages:
   is_completed: true
 - id: 396
   step: 9288
-  is_completed: false
+  is_completed: true
 - id: 397
   step: 9289
-  is_completed: false
+  is_completed: true
 - id: 398
   step: 9290
   is_completed: false
