@@ -1,6 +1,8 @@
 package org.hyperskill.stopwatch
 
-import android.app.AlertDialog
+import android.app.*
+import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
@@ -14,6 +16,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 
 
 class MainActivity : AppCompatActivity() {
@@ -57,9 +60,11 @@ class MainActivity : AppCompatActivity() {
         handler.post(updateColor)
     }
     private val updateWatch: Runnable = object : Runnable {
+        @RequiresApi(Build.VERSION_CODES.O)
         override fun run() {
-            if (upperLimit != -1 && upperLimit <= seconds) {
+            if (upperLimit != -1 && upperLimit == seconds) {
                 watch.setTextColor(Color.RED)
+                if (upperLimit > 0) notifier()
             }
             watch.text = "%02d:%02d".format(seconds / 60, seconds % 60)
             seconds++
@@ -87,6 +92,37 @@ class MainActivity : AppCompatActivity() {
             .setNegativeButton("Cancel", null)
             .setView(editText).create()
         dialog.show()
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun notifier() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+        val channelId = "org.hyperskill"
+        val name = "Notification"
+        val descriptionText = "Time exceeded"
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel = NotificationChannel(channelId, name, importance).apply {
+            description = descriptionText
+        }
+
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+
+        val intent = Intent(this, LauncherActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val notificationBuilder = NotificationCompat.Builder(this,channelId)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("Notification")
+            .setContentText("Time exceeded")
+            .setOnlyAlertOnce(true)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setFullScreenIntent(pendingIntent, true)
+            .build()
+        notificationBuilder.flags = Notification.FLAG_INSISTENT or Notification.FLAG_ONLY_ALERT_ONCE
+        notificationManager.notify(393939, notificationBuilder)
     }
     override fun onStop() {
         super.onStop()
